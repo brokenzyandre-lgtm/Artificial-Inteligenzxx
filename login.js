@@ -5,7 +5,7 @@ async function handleLogin(event) {
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch('data','users.json');
+        const response = await fetch('data/users.json');
         const usersData = await response.json();
         
         if (username === usersData.admin.username && password === usersData.admin.password) {

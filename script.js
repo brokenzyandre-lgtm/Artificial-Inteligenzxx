@@ -66,7 +66,7 @@ async function handleLogin(event) {
     
     try {
         // Load users from JSON file
-        const response = await fetch('./data/users.json');
+        const usersPath = path.join(process.cwd(), 'data', 'users.json');
         const usersData = await response.json();
         
         // Check admin credentials

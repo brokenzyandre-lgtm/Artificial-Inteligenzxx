@@ -5,7 +5,7 @@ async function handleLogin(event) {
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch('data/users.json');
+        const response = await fetch('data','users.json');
         const usersData = await response.json();
         
         if (username === usersData.admin.username && password === usersData.admin.password) {
@@ -13,7 +13,7 @@ async function handleLogin(event) {
                 username: usersData.admin.username,
                 role: usersData.admin.role
             }));
-            window.location.href = '/developer.html';
+            window.location.href = 'developer.html';
             return;
         }
         
@@ -23,7 +23,7 @@ async function handleLogin(event) {
                 username: user.username,
                 role: user.role
             }));
-            window.location.href = '/chat.html';
+            window.location.href = 'chat.html';
             return;
         }
         

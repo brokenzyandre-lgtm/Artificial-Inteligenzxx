@@ -66,7 +66,7 @@ async function handleLogin(event) {
     
     try {
         // Load users from JSON file
-        const response = await fetch('./users.json');
+        const response = await fetch('./data/users.json');
         const usersData = await response.json();
         
         // Check admin credentials
@@ -78,7 +78,7 @@ async function handleLogin(event) {
             }));
             
             // Redirect to admin panel
-            window.location.href = '/developer.html';
+            window.location.href = 'developer.html';
             return;
         }
         

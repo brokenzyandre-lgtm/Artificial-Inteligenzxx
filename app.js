@@ -1,28 +1,40 @@
-const API_KEY = "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";
+const API_KEY = "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";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
+// Menambahkan pesan ke chat
 function addMessage(text, sender) {
     const msg = document.createElement("div");
     msg.classList.add("message", sender);
-    msg.textContent = text;
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
+    return msg;
 }
 
+// Menampilkan teks per huruf (typing effect)
+async function typeMessage(element, text) {
+    element.textContent = "";
+    for (let i = 0; i < text.length; i++) {
+        element.textContent += text[i];
+        await new Promise(r => setTimeout(r, 20)); // kecepatan typing
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+// Mengirim pesan ke AI
 async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
+
     addMessage(text, "user");
     userInput.value = "";
-    addMessage("AI sedang mengetik...", "ai");
 
-    const messages = [
-        {role: "user", content: text}
-    ];
+    const aiMsgElem = addMessage("AI sedang mengetik...", "ai");
+
+    const messages = [{role: "user", content: text}];
 
     try {
         const response = await fetch(API_URL, {
@@ -32,7 +44,7 @@ async function sendMessage() {
                 "Authorization": `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                model: "DeepSeek-v3",
+                model: "DeepSeek-R1",
                 messages: messages
             })
         });
@@ -40,12 +52,11 @@ async function sendMessage() {
         const data = await response.json();
         const aiMsg = data.choices[0].message.content;
 
-        chatBox.removeChild(chatBox.lastChild);
-        addMessage(aiMsg, "ai");
+        aiMsgElem.textContent = "";
+        await typeMessage(aiMsgElem, aiMsg);
 
     } catch (err) {
-        chatBox.removeChild(chatBox.lastChild);
-        addMessage("Terjadi error, coba lagi.", "ai");
+        aiMsgElem.textContent = "Terjadi error, coba lagi.";
         console.error(err);
     }
 }

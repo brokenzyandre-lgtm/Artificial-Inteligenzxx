@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuantumQuiz | Futuristic Learning Platform</title>
+  <meta name="description" content="Platform kuis interaktif futuristik dengan 40+ kategori, 1400+ soal, dan sertifikat digital instan.">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="particles-bg"></canvas>
+
+  <div class="card fade-in">
+    <h1>Quantum<span style="color:#ff00e6">Quiz</span></h1>
+    <p style="font-size:1.25rem; max-width:700px; margin:0 auto 1.8rem;">
+      Platform pembelajaran berbasis kuis interaktif dengan desain futuristik, AI-inspired UI, dan pengalaman pengguna premium.
+    </p>
+
+    <div style="margin:2rem 0;">
+      <label for="name-input" style="display:block; margin-bottom:0.6rem; font-weight:500;">Masukkan Nama Anda:</label>
+      <input type="text" id="name-input" placeholder="Contoh: Dr. Maya Suryadi"
+             maxlength="40" />
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin:2rem 0;">
+      <button id="start-quiz" class="btn">🚀 Mulai Kuis</button>
+      <button id="view-model" class="btn secondary">📸 Foto & Desain Model</button>
+    </div>
+
+    <p style="font-size:0.85rem; color:var(--gray); margin-top:2rem;">
+      ✅ 100% offline-ready • ✅ Tidak perlu login • ✅ Data disimpan lokal di browser
+    </p>
+  </div>
+
+  <script>
+    // Partikel latar belakang (aman, tidak pakai API)
+    const canvas = document.getElementById('particles-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const count = 60;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        this.hue = Math.random() * 30 + 180; // cyan-blue
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+        if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+      }
+      draw() {
+        ctx.fillStyle = `hsla(${this.hue}, 100%, 80%, ${0.4 + Math.random() * 0.3})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < count; i++) {
+      particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Navigasi
+    document.getElementById('start-quiz').onclick = () => {
+      const name = document.getElementById('name-input').value.trim();
+      if (!name) {
+        alert('⚠️ Mohon masukkan nama Anda.');
+        return;
+      }
+      localStorage.setItem('userName', name);
+      window.location.href = 'quiz.html';
+    };
+
+    document.getElementById('view-model').onclick = () => {
+      window.location.href = 'model-design.html';
+    };
+  </script>
+</body>
+</html>

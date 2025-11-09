@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sertifikat | QuantumQuiz</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="card" style="max-width:900px;">
+    <h1>Hasil Kuis</h1>
+
+    <div id="summary" style="margin:2rem 0; padding:1.5rem; background:rgba(25,25,50,0.4); border-radius:16px;"></div>
+
+    <div class="certificate" id="cert-content">
+      <h1>SERTIFIKAT PENYELESAIAN</h1>
+      <p style="font-size:1.3rem;">Diberikan kepada</p>
+      <h2 id="cert-name" style="font-size:2rem; color:#fff;">—</h2>
+      <p style="margin:1.2rem 0;">Atas partisipasi dalam kuis</p>
+      <h3 id="cert-cat" style="color:var(--accent);">—</h3>
+      <p style="font-size:1.6rem; margin:1.5rem 0;">
+        dengan nilai akhir <strong id="cert-score" style="color:gold;">—</strong>
+      </p>
+      <div style="margin-top:2.5rem;">
+        <div style="display:flex; justify-content:space-around;">
+          <div>
+            <div style="width:200px; border-top:1px solid #aaa; margin:0 auto 8px;"></div>
+            <p>Direktur QuantumQuiz</p>
+          </div>
+          <div>
+            <div style="width:200px; border-top:1px solid #aaa; margin:0 auto 8px;"></div>
+            <p id="cert-date">—</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
+      <button id="download-cert" class="btn">💾 Unduh Sertifikat (PNG)</button>
+      <button onclick="window.location.href='index.html'" class="btn secondary">🏠 Kembali ke Beranda</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const name = localStorage.getItem('userName') || 'Peserta';
+      const res = JSON.parse(localStorage.getItem('quizResult'));
+      if (!res) {
+        document.getElementById('summary').innerHTML = '<p>❌ Data tidak ditemukan.</p>';
+        return;
+      }
+
+      const { category, score, correct, total, timeUsed } = res;
+      const mins = Math.floor(timeUsed / 60);
+      const secs = timeUsed % 60;
+
+      document.getElementById('summary').innerHTML = `
+        <p><strong>Kategori:</strong> ${category}</p>
+        <p><strong>Skor Akhir:</strong> <span style="color:${score >= 80 ? 'var(--success)' : score >= 60 ? 'var(--accent)' : 'var(--error)'}">${score}%</span></p>
+        <p><strong>Benar:</strong> ${correct} dari ${total} soal</p>
+        <p><strong>Waktu:</strong> ${mins} menit ${secs} detik</p>
+      `;
+
+      document.getElementById('cert-name').textContent = name;
+      document.getElementById('cert-cat').textContent = category;
+      document.getElementById('cert-score').textContent = `${score}%`;
+      const d = new Date();
+      document.getElementById('cert-date').textContent = 
+        d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('download-cert').onclick = async () => {
+        const el = document.getElementById('cert-content');
+        try {
+          const canvas = await html2canvas(el, {
+            scale: 2,
+            backgroundColor: null,
+            logging: false
+          });
+          const a = document.createElement('a');
+          a.download = `QuantumQuiz_Sertifikat_${name.replace(/\s+/g,'_')}.png`;
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+        } catch (e) {
+          alert('⚠️ Gagal mengunduh. Coba lagi.');
+          console.error(e);
+        }
+      };
+    });
+  </script>
+</body>
+</html>

